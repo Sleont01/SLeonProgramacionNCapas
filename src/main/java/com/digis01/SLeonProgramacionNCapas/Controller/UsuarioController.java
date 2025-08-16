@@ -107,7 +107,7 @@ public class UsuarioController {
         
     
     }
-    
+    //usuario/formEditable?IdUsuario=1&IdDireccion=2
     @GetMapping("/formEditable")
     public String formEditable(
                 @RequestParam int IdUsuario, 
@@ -117,8 +117,16 @@ public class UsuarioController {
             
         if (IdDireccion == null) {  // Editar Usuario
             /* recuperar información del usuario*/
+            //UsuarioGetById
+            
+           Result result = usuarioDAOImplementation.GetById(IdUsuario);
            
+           if(result.correct){
+               model.addAttribute("Usuario", result.objects);
+           }
+   
         } else if (IdDireccion == 0) {//Agregar direccion
+            
             
         } else { // editar direccion
             /*recuperar información de la direccion*/

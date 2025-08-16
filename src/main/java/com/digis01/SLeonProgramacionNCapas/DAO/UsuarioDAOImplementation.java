@@ -200,8 +200,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                             Direccion direccion = new Direccion();
                             direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
                             direccion.setCalle(resultSet.getString("Calle"));
-                            direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                             direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
+                            direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                             
                             //resto de datos
                             direccion.Colonia = new Colonia();
@@ -211,8 +211,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                             
                             //////////////////
                             direccion.Colonia.Municipio = new Municipio();
-                            direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IdColonia"));
-                            direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreColonia"));
+                            direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IdMunicipio"));
+                            direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
                             ////////////////////
                             direccion.Colonia.Municipio.Estado = new Estado();
                             direccion.Colonia.Municipio.Estado.setIdEstado(resultSet.getInt("IdEstado"));
@@ -340,7 +340,62 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
     
     }
     
-    
-    
+    @Override
+    public Result GetById(int idUsuario) {
+        
+        Result result = new Result();
+        
+         try {
+
+            jdbcTemplate.execute("{CALL UsuarioDireccionGetByIdUsuario(?,?)}", (CallableStatementCallback<Integer>) callableStatement -> {
+                callableStatement.setInt(1, idUsuario);
+                callableStatement.registerOutParameter(2, java.sql.Types.REF_CURSOR);
+
+                callableStatement.execute();
+
+                ResultSet resultSet = (ResultSet) callableStatement.getObject(2);
+
+                if (resultSet.next()) {
+
+                    Usuario usuario = new Usuario();
+
+                    usuario.setIdUsuario(idUsuario);
+                    usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
+                    usuario.setNombre(resultSet.getString("NombreUsuario"));
+                    usuario.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
+                    usuario.setPais(resultSet.getString("Pais"));
+                    usuario.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
+                    usuario.setEdad(resultSet.getInt("Edad"));
+                    usuario.setAltura(resultSet.getDouble("Altura"));
+                    usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
+                    usuario.setUsername(resultSet.getString("Username"));
+                    usuario.setEmail(resultSet.getString("Email"));
+                    usuario.setPassword(resultSet.getString("Password"));
+                    usuario.setSexo(resultSet.getString("Sexo"));
+                    usuario.setTelefono(resultSet.getString("Telefono"));
+                    usuario.setCelular(resultSet.getString("Celular"));
+                    usuario.setCURP(resultSet.getString("CURP"));
+                    
+                    usuario.Rol = new Rol();
+                    usuario.Rol.setIdRol(resultSet.getInt("IdRol"));
+                    usuario.Rol.setNombre(resultSet.getString("NombreRol"));
+                    
+                    
+                    result.object = usuario;
+                }
+
+                result.correct = true;
+                return 1;
+            });  
+            
+             } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+
+        return result;
+    }
+
     
 }

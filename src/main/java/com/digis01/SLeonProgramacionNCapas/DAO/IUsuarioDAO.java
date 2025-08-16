@@ -12,5 +12,9 @@ public interface IUsuarioDAO {
       Result Add(Usuario usuario);
       
       Result Update(Usuario usuario);
+      
+      Result GetById(int idUsuario);
+      
+      
     
 }
