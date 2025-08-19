@@ -247,7 +247,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
         Result result = new Result();
         
         try {
-            result.correct = jdbcTemplate.execute("CALL UsuarioDireccionAdd(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callablestatement -> {
+            result.correct = jdbcTemplate.execute("CALL UsuarioDireccionAdd(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callablestatement -> {
 
                 callablestatement.setString(1, usuario.getNombre());
                 callablestatement.setString(2, usuario.getApellidoPaterno());
@@ -268,6 +268,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                 callablestatement.setString(17, usuario.Direcciones.get(0).getNumeroExterior());
                 callablestatement.setString(18, usuario.Direcciones.get(0).getNumeroInterior());
                 callablestatement.setInt(19, usuario.Direcciones.get(0).Colonia.getIdColonia());
+                callablestatement.setString(20, usuario.getImagen());
 
                 int isCorrect = callablestatement.executeUpdate();
 

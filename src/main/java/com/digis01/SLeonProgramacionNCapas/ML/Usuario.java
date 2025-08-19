@@ -21,9 +21,6 @@ public class Usuario {
     @Pattern(regexp="^[A-Z][a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\\\\s]+$", message="Solo puede contener letras")
     @NotEmpty(message = "Información necesaria")
     private String ApellidoPaterno;
-    @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @Pattern(regexp="^[A-Z][a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\\\\s]+$", message="Solo puede contener letras")
-    @NotEmpty(message = "Información necesaria")
     private String Pais;
     @Past(message = "La fecha de nacimiento debe ser en el pasado.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -63,6 +60,7 @@ public class Usuario {
     public Rol Rol;
 
     public List<Direccion> Direcciones;
+    private String Imagen;
 
     public Usuario() {
     }
@@ -86,14 +84,16 @@ public class Usuario {
         this.CURP = curp;
         this.IdRol = idrol;
     }
-    
-    public void setIdUsuario(int idUsuario){
-        this.IdUsuario = idUsuario;
+
+    public int getIdUsuario() {
+        return IdUsuario;
+    }
+
+    public void setIdUsuario(int IdUsuario) {
+        this.IdUsuario = IdUsuario;
     }
     
-    public int getIdUsuario(){
-        return this.IdUsuario;
-    }
+    
     
     public void setNombre(String nombre) {
         this.Nombre = nombre;
@@ -230,6 +230,14 @@ public class Usuario {
 
     public void setDirecciones(List<Direccion> Direcciones) {
         this.Direcciones = Direcciones;
+    }
+    
+    public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
     }
     
     
