@@ -62,47 +62,7 @@
                                     Message error
                                 </span>
                             </div>
-                            <div class="col mb-3">
-                                <label for="Pais" class="form-label fw-bold">Pais</label>
-                                <!-- onkeypress="SoloLetras(event, this) -->
-                                <input id="Pais" type="text" class="form-control" placeholder="Pais" th:field="*{Pais}">
-
-                                <span class="text-danger"
-                                      th:if="${#fields.hasErrors('Pais')}"
-                                      th:errors="*{Pais}">
-                                    Message error
-                                </span>
-                            </div>
-                            <div class="col mb-3">
-                                <label for="FechaNacimiento" class="form-label fw-bold">Fecha Nacimiento</label>
-                                <!--  <input id="FechaNacimiento" type="date" class="form-control" placeholder="yyyy-mm-dd" th:field="*{FechaNacimiento}" onblur="validarFechaNacimiento(this)">-->
-                                <input id="FechaNacimiento" type="date" class="form-control" placeholder="yyyy-mm-dd" th:field="*{FechaNacimiento}">
-                                <span class="error-msg text-danger"
-                                      th:if="${#fields.hasErrors('FechaNacimiento')}"
-                                      th:errors="*{FechaNacimiento}"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col mb-3">
-                                <label for="Edad" class="form-label fw-bold">Edad</label>
-                                <!--<input id="Edad" type="number" class="form-control" placeholder="Edad" th:field="*{Edad}" onkeypress="return validarEntero(event, this)">-->
-                                <input id="Edad" type="number" class="form-control" placeholder="Edad" th:field="*{Edad}">
-
-                                <span class="error-msg text-danger"
-                                      th:if="${#fields.hasErrors('Edad')}"
-                                      th:errors="*{Edad}"></span>
-                            </div>
-                            <div class="col mb-3">
-                                <label for="Altura" class="form-label fw-bold">Altura</label>
-                                <input id="Altura" type="number" class="form-control" placeholder="Altura" step="0.01" th:field="*{Altura}" onkeypress="return validarDecimal(event, this)">
-                                <!-- <input id="Altura" type="number" class="form-control" placeholder="Altura" step="0.01" th:field="*{Altura}">-->
-                                <!-- <span class="error-msg text-danger" 
-                                   th:if="${#fields.hasErrors('Altura')}"
-                                   th:errors="*{Altura}">
-                                 Message error
-                             </span>-->
-                            </div>
+                             
                             <div class="col mb-3">
                                 <label for="ApellidoMaternoUsuario" class="form-label fw-bold">Apellido Materno</label>
                                 <input id="ApellidoMaternoUsuario" type="text" class="form-control" placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
@@ -112,6 +72,15 @@
                                       th:errors="*{ApellidoMaterno}">
                                     Message error
                                 </span>
+                            </div>
+                       
+                            <div class="col mb-3">
+                                <label for="FechaNacimiento" class="form-label fw-bold">Fecha Nacimiento</label>
+                                <!--  <input id="FechaNacimiento" type="date" class="form-control" placeholder="yyyy-mm-dd" th:field="*{FechaNacimiento}" onblur="validarFechaNacimiento(this)">-->
+                                <input id="FechaNacimiento" type="date" class="form-control" placeholder="yyyy-mm-dd" th:field="*{FechaNacimiento}">
+                                <span class="error-msg text-danger"
+                                      th:if="${#fields.hasErrors('FechaNacimiento')}"
+                                      th:errors="*{FechaNacimiento}"></span>
                             </div>
                         </div>
                         <div class="row">
@@ -224,7 +193,7 @@
 
                     <div class="row"> 
 
-                        <div class="col-md-3">
+                       <div class="col-md-3">
                             <label for="colonia" class="form-label fw-bold">Colonia</label>
                             <input id="colonia" type="text" class="form-control" placeholder="Colonia" th:field="*{Direcciones[0].Colonia.IdColonia}" onkeypress="return validarEntero(event, this)">
                             <span class="error-msg text-danger"></span>

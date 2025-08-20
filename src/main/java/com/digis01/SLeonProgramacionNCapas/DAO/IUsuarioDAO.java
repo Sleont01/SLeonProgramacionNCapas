@@ -16,5 +16,7 @@ public interface IUsuarioDAO {
       Result GetById(int idUsuario);
       
       
+      
+      
     
 }

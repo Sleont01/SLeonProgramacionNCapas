@@ -7,11 +7,17 @@ import com.digis01.SLeonProgramacionNCapas.DAO.UsuarioDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.RolDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.ML.Direccion;
+import com.digis01.SLeonProgramacionNCapas.ML.ErrorCM;
 import com.digis01.SLeonProgramacionNCapas.ML.Result;
+import com.digis01.SLeonProgramacionNCapas.ML.Rol;
 import com.digis01.SLeonProgramacionNCapas.ML.Usuario;
 import jakarta.validation.Valid;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("usuario")
@@ -228,5 +236,76 @@ public class UsuarioController {
     
         return coloniaDAOImplementation.ColoniaByMunicipio(IdMunicipio);
     }
+    
+     @GetMapping("cargamasiva")
+    public String CargaMasiva(){
+        return "CargaMasiva";
+    }
+    
+    @PostMapping("cargamasiva")
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file){
+        
+        if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
+            List<Usuario> usuarios = ProcesarTXT(file);
+            List<ErrorCM> errores = ValidarDatos(usuarios);
+            
+            //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
+        } else {
+             // excel
+        }
+        
+        return "CargaMasiva";
+    }
+    
+    private List<Usuario> ProcesarTXT(MultipartFile file){
+        try {
+            InputStream inputStream = file.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            
+            String linea = ""; 
+            List<Usuario> usuarios = new ArrayList<>();
+            while ((linea = bufferedReader.readLine()) != null) {                
+                String[] campos = linea.split("\\|");
+                Usuario usuario = new Usuario();
+                usuario.setNombre(campos[0]);
+                usuario.setApellidoPaterno(campos[1]);
+                LocalDate fechaNacimiento = LocalDate.parse(campos[2]);
+                usuario.setFechaNacimiento(fechaNacimiento);
+                usuario.setApellidoMaterno(campos[3]);
+                usuario.setUsername(campos[4]);
+                usuario.setEmail(campos[5]);
+                usuario.setPassword(campos[6]);
+                usuario.setSexo(campos[7]);
+                usuario.setTelefono(campos[8]);
+                usuario.setCelular(campos[9]);
+                usuario.setCURP(campos[10]);
+                usuario.Rol = new Rol();
+                usuario.Rol.setIdRol(Integer.parseInt(campos[11]));
+                usuarios.add(usuario);
+                
+            }
+            return usuarios;
+        } catch (Exception ex){
+            System.out.println("error");
+            return null;
+        }
+        
+    }
+    
+    private List<ErrorCM> ValidarDatos(List<Usuario>usuarios){
+        List<ErrorCM> errores = new ArrayList<>();
+        int linea = 1; 
+        for (Usuario usuario : usuarios) {
+            if (usuario.getNombre() == null || usuario.getNombre() == ""){
+                ErrorCM errorCM = new ErrorCM(linea, usuario.getNombre(), "Campo obligatorio");
+                errores.add(errorCM);
+            }
+            linea ++;
+        }
+        
+        return errores;
+    }
+    
+    
 }
 

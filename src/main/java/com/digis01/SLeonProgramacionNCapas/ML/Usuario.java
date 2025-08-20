@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -239,6 +240,9 @@ public class Usuario {
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
-    
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
