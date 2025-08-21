@@ -92,6 +92,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                 usuario.Rol.setIdRol(resultSet.getInt("IdRol"));
                 usuario.Rol.setNombre(resultSet.getString("NombreRol"));
                 
+                usuario.setImagen(resultSet.getString("Imagen"));
+                
                                 
                 int idDireccion;
                 if((idDireccion = resultSet.getInt("IdDireccion")) != 0){

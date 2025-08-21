@@ -16,28 +16,22 @@ public class Usuario {
     private int IdUsuario;
     @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
     @NotEmpty(message = "Información necesaria")
-    @Pattern(regexp="^[A-Z][a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\\\\s]+$", message="Solo puede contener letras")
+    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
     private String Nombre;
     @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @Pattern(regexp="^[A-Z][a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\\\\s]+$", message="Solo puede contener letras")
+    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
     @NotEmpty(message = "Información necesaria")
     private String ApellidoPaterno;
-    private String Pais;
     @Past(message = "La fecha de nacimiento debe ser en el pasado.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
-    @Min(value = 18, message = "Tu edad debe ser mayor o igual a 18")
-    @Max(value = 100, message = "El número debe ser menor o igual a 100")
-    private int Edad;
-    
-    private double Altura;
     @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @Pattern(regexp="^[A-Z][a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\\\\s]+$", message="Solo puede contener letras")
+    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
     @NotEmpty(message = "Información necesaria")
     private String ApellidoMaterno;
     @Size(min = 3, max = 20, message = "Username debe ser entre 3 a 20 caracteres")
-    @Pattern(regexp = "^[a-zA-Z0-9_]{8,20}$", 
-             message = "solo puede contener letras, números, puntos, guiones bajos y guiones")
+//    @Pattern(regexp = "^[a-zA-Z0-9_]{8,20}$", 
+//             message = "solo puede contener letras, números, puntos, guiones bajos y guiones")
     @NotEmpty(message = "Información necesaria")
     private String Username;
     @Pattern(regexp = "^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\\.[a-zA-Z]{2,}$", message = "Formato de correo electrónico inválido")
@@ -57,7 +51,7 @@ public class Usuario {
     private String Celular;
     @NotEmpty(message = "Información necesaria")
     private String CURP;
-    private int IdRol;
+//    private int IdRol;
     public Rol Rol;
 
     public List<Direccion> Direcciones;
@@ -66,15 +60,15 @@ public class Usuario {
     public Usuario() {
     }
     
-    public Usuario(int idUsuario, String nombre, String apellidopaterno, String pais, Date fechanacimiento, int edad, double altura, String apellidomaterno,
-            String username, String email, String password, String sexo, String telefono, String celular, String curp, int idrol){
+    public Usuario(int idUsuario, String nombre, String apellidopaterno, Date fechanacimiento, String apellidomaterno,
+            String username, String email, String password, String sexo, String telefono, String celular, String curp, int idrol, String imagen){
         this.IdUsuario = idUsuario;
         this.Nombre = nombre;
         this.ApellidoPaterno = apellidopaterno;
-        this.Pais = pais;
+
         this.FechaNacimiento = fechanacimiento;
-        this.Edad = edad;
-        this.Altura = altura;
+ 
+
         this.ApellidoMaterno = apellidomaterno;
         this.Username = username;
         this.Email = email;
@@ -83,7 +77,8 @@ public class Usuario {
         this.Telefono = telefono;
         this.Celular = celular;
         this.CURP = curp;
-        this.IdRol = idrol;
+//        this.IdRol = idrol;
+        this.Imagen = imagen;
     }
 
     public int getIdUsuario() {
@@ -113,13 +108,7 @@ public class Usuario {
     }
 
     
-    public void setPais(String pais){
-        this.Pais = pais;
-    }
     
-    public String getPais(){
-        return Pais;
-    }
     
     public void setFechaNacimiento(Date fechanacimiento){
         this.FechaNacimiento = fechanacimiento;
@@ -129,21 +118,7 @@ public class Usuario {
         return FechaNacimiento;
     }
     
-    public void setEdad(int edad){
-        this.Edad = edad;
-    }
-    
-    public int getEdad(){
-        return Edad;
-    }
-    
-    public void setAltura(double altura){
-        this.Altura = altura;
-    }
-    
-    public double getAltura(){
-        return Altura;
-    }
+  
     
     public void setApellidoMaterno(String apellidomaterno){
         this.ApellidoMaterno = apellidomaterno;
@@ -209,13 +184,13 @@ public class Usuario {
         return CURP;
     }
     
-    public void setIdRol(int idrol){
-        this.IdRol = idrol;
-    }
-    
-    public int getIdRol(){
-        return IdRol;
-    }
+//    public void setIdRol(int idrol){
+//        this.IdRol = idrol;
+//    }
+//    
+//    public int getIdRol(){
+//        return IdRol;
+//    }
 
     public Rol getRol() {
         return Rol;
@@ -224,6 +199,8 @@ public class Usuario {
     public void setRol(Rol Rol) {
         this.Rol = Rol;
     }
+
+    
 
     public List<Direccion> getDirecciones() {
         return Direcciones;
@@ -239,10 +216,6 @@ public class Usuario {
 
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
-    }
-
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

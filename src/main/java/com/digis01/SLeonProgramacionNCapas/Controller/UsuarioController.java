@@ -15,9 +15,13 @@ import jakarta.validation.Valid;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @Controller
 @RequestMapping("usuario")
@@ -168,15 +173,42 @@ public class UsuarioController {
             
         } else { // editar direccion
             /*recuperar información de la direccion*/
-            Result resultDireccion = usuarioDAOImplementation.GetById(IdDireccion);
-            if (resultDireccion.correct && resultDireccion.object != null) {
-                Direccion direccion = (Direccion) resultDireccion.object;
-                Usuario usuario = new Usuario(); 
-                usuario.setIdUsuario(IdUsuario);
-                usuario.setDirecciones(new ArrayList<>());
-                usuario.getDirecciones().add(direccion);
-                model.addAttribute("Usuario", usuario);
+            
+             Result result = usuarioDAOImplementation.DireccionesByIdUsuario(IdUsuario);
+    
+    if (result.correct && result.object != null) {
+        Usuario usuario = (Usuario) result.object;
+
+       
+        if (usuario.getDirecciones() != null) {
+            
+            Direccion direccionSeleccionada = null;
+            for (Direccion direccion : usuario.getDirecciones()) {
+                if (direccion.getIdDireccion() == IdDireccion) {
+                    direccionSeleccionada = direccion;
+                    break;
+                }
             }
+
+            if (direccionSeleccionada != null) {
+                List<Direccion> listaDirecciones = new ArrayList<>();
+                listaDirecciones.add(direccionSeleccionada);
+                usuario.setDirecciones(listaDirecciones);
+
+                model.addAttribute("Usuario", usuario);
+                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            } else {
+                model.addAttribute("error", "No se encontró la dirección especificada para este usuario.");
+                return "Error";
+            }
+        } else {
+            model.addAttribute("error", "El usuario no tiene direcciones registradas.");
+            return "Error";
+        }
+    } else {
+        model.addAttribute("error", "No se pudo cargar la información del usuario.");
+        return "Error";
+    }
         }
 
         return "UsuarioForm";
@@ -191,7 +223,7 @@ public class UsuarioController {
             return "UsuarioForm";
         }else{
             
-            if (imagen != null) {
+            if (imagen != null && imagen.getOriginalFilename() != "") {
                 String nombre = imagen.getOriginalFilename();
                 //archivo.jpg
                 //[archivo,jpg]
@@ -243,15 +275,33 @@ public class UsuarioController {
     }
     
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam("archivo") MultipartFile file){
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model){
         
         if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
             List<Usuario> usuarios = ProcesarTXT(file);
             List<ErrorCM> errores = ValidarDatos(usuarios);
             
+            if (errores.isEmpty()) {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", true);
+            } else {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", false);
+            }
+            
             //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
         } else {
              // excel
+             List<Usuario> usuarios = ProcesarExcel(file);
+             List<ErrorCM> errores = ValidarDatos(usuarios);
+            
+            if (errores.isEmpty()) {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", true);
+            } else {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", false);
+            }        
         }
         
         return "CargaMasiva";
@@ -269,7 +319,8 @@ public class UsuarioController {
                 Usuario usuario = new Usuario();
                 usuario.setNombre(campos[0]);
                 usuario.setApellidoPaterno(campos[1]);
-                LocalDate fechaNacimiento = LocalDate.parse(campos[2]);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date fechaNacimiento = formatter.parse(campos[2]);
                 usuario.setFechaNacimiento(fechaNacimiento);
                 usuario.setApellidoMaterno(campos[3]);
                 usuario.setUsername(campos[4]);
@@ -292,20 +343,94 @@ public class UsuarioController {
         
     }
     
-    private List<ErrorCM> ValidarDatos(List<Usuario>usuarios){
-        List<ErrorCM> errores = new ArrayList<>();
-        int linea = 1; 
-        for (Usuario usuario : usuarios) {
-            if (usuario.getNombre() == null || usuario.getNombre() == ""){
-                ErrorCM errorCM = new ErrorCM(linea, usuario.getNombre(), "Campo obligatorio");
-                errores.add(errorCM);
-            }
-            linea ++;
-        }
+    private List<Usuario> ProcesarExcel(MultipartFile file){
         
-        return errores;
+        List<Usuario> usuarios = new ArrayList<>();
+        
+        try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())){
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                Usuario usuario = new Usuario();
+                usuario.setNombre(row.getCell(0) != null ?  row.getCell(0).toString() : "");
+                usuario.setApellidoPaterno(row.getCell(1).toString());
+                usuario.setFechaNacimiento(row.getCell(2).getDateCellValue());
+                usuario.setApellidoMaterno(row.getCell(3).toString());
+                usuario.setUsername(row.getCell(4).toString());
+                usuario.setEmail(row.getCell(5).toString());
+                usuario.setPassword(row.getCell(6).toString());
+                usuario.setSexo(row.getCell(7).toString());
+                usuario.setTelefono(row.getCell(8).toString());
+                usuario.setCelular(row.getCell(9).toString());
+                usuario.setCURP(row.getCell(10).toString());
+                
+                usuario.Rol = new Rol();
+                usuario.Rol.setIdRol(row.getCell(11) != null ? (int) row.getCell(11).getNumericCellValue() : 0);
+                
+                usuarios.add(usuario);
+            }
+            return usuarios;
+        } catch (Exception ex) {
+            return null;
+        }
+    
     }
     
-    
+    private List<ErrorCM> ValidarDatos(List<Usuario> usuarios) {
+        List<ErrorCM> errores = new ArrayList<>();
+
+        int linea = 1;
+        for (Usuario usuario : usuarios) {
+            if (usuario.getNombre() == null || usuario.getNombre() == "") {
+
+                errores.add(new ErrorCM(linea, usuario.getNombre() == "" ? "vacio" : usuario.getNombre(), "Nombre es un campo obligatorio"));
+            }
+            if (usuario.getApellidoPaterno() == null || usuario.getApellidoPaterno() == "") {
+                errores.add(new ErrorCM(linea, usuario.getApellidoPaterno(), "Campo obligatorio"));
+            }
+            if (usuario.getFechaNacimiento() == null) {
+                errores.add(new ErrorCM(linea, "", "Fecha de nacimiento es obligatoria"));
+            }
+            if (usuario.getApellidoMaterno() == null || usuario.getApellidoMaterno().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getApellidoMaterno(), "Apellido materno es obligatorio"));
+            }
+            
+            if (usuario.getUsername() == null || usuario.getUsername().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getUsername(), "Username es obligatorio"));
+            }
+            
+            if (usuario.getEmail() == null || usuario.getEmail().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getEmail(), "Email es obligatorio"));
+            } else if (!usuario.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                errores.add(new ErrorCM(linea, usuario.getEmail(), "Formato de email no válido"));
+            }
+            
+            if (usuario.getPassword() == null || usuario.getPassword().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getPassword(), "Password es obligatorio"));
+            }
+            
+            if (usuario.getSexo() == null || usuario.getSexo().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getSexo(), "Sexo es obligatorio"));
+            }
+
+            if (usuario.getTelefono() == null || usuario.getTelefono().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getTelefono(), "Teléfono es obligatorio"));
+            }
+
+            if (usuario.getCelular() == null || usuario.getCelular().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getCelular(), "Celular es obligatorio"));
+            }
+
+            if (usuario.getCURP() == null || usuario.getCURP().trim().equals("")) {
+                errores.add(new ErrorCM(linea, usuario.getCURP(), "CURP es obligatorio"));
+            }
+            if (usuario.Rol.getIdRol() == 0) {
+                errores.add(new ErrorCM(linea, usuario.Rol.getIdRol() + "", "Numero de rol no valido"));
+            }
+            linea++;
+        }
+
+        return errores;
+    }
+
 }
 
