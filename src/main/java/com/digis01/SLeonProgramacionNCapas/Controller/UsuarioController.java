@@ -76,8 +76,12 @@ public class UsuarioController {
     
     @GetMapping
     public String Index(Model model){
-        Result result = usuarioDAOImplementation.GetAll();
         
+        Result result = usuarioDAOImplementation.GetAll(new Usuario("", "", "", new Rol()));
+
+
+        model.addAttribute("usuarioBusqueda", new Usuario());
+
         if (result.correct) {
             model.addAttribute("usuarios", result.objects);
         } else  {
@@ -86,6 +90,18 @@ public class UsuarioController {
         
         return "UsuarioIndex";
     }
+    
+     @PostMapping
+    public String Index(Model model, @ModelAttribute("usuarioBusqueda") Usuario usuarioBusqueda ) {
+
+        Result result = usuarioDAOImplementation.GetAll(usuarioBusqueda);
+        
+        model.addAttribute("usuarioBusqueda", usuarioBusqueda);
+        model.addAttribute("usuarios", result.objects);
+        
+        return "UsuarioIndex";
+    }
+    
     
   /*  @GetMapping("usuarioDetail/{idUsuario}")
     public String UsuarioDetail(@PathVariable int idUsuario, Model model){
@@ -386,9 +402,12 @@ public class UsuarioController {
                 usuario.setCelular(campos[9]);
                 usuario.setCURP(campos[10]);
                 usuario.Rol = new Rol();
-                usuario.Rol.setIdRol(Integer.parseInt(campos[11]));
-                
-                
+                try {
+                    usuario.Rol.setIdRol(Integer.parseInt(campos[11]));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    usuario.Rol.setIdRol(0);
+                }
+
                 usuario.setDirecciones(new ArrayList<>());
                 Direccion direccion = new Direccion();
                 direccion.setCalle(campos[12]);
@@ -396,33 +415,37 @@ public class UsuarioController {
                 direccion.setNumeroInterior(campos[14]);
 
                 Colonia colonia = new Colonia();
-                colonia.setIdColonia(Integer.parseInt(campos[15])); 
+                try {
+                    colonia.setIdColonia(Integer.parseInt(campos[15]));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    colonia.setIdColonia(0);
+                }
                 direccion.setColonia(colonia);
 
                 usuario.getDirecciones().add(direccion);
                 usuarios.add(usuario);
-                
+
             }
             return usuarios;
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("error");
             return null;
         }
-        
+
     }
-    
-    private List<Usuario> ProcesarExcel(File file){
-        
+
+    private List<Usuario> ProcesarExcel(File file) {
+
         List<Usuario> usuarios = new ArrayList<>();
-        
+
         try {
-             XSSFWorkbook workbook = new XSSFWorkbook(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 Usuario usuario = new Usuario();
-                usuario.setNombre(row.getCell(0) != null ?  row.getCell(0).toString() : "");
-                usuario.setApellidoPaterno(row.getCell(1) != null ?  row.getCell(1).toString() : "");
-               // usuario.setFechaNacimiento(row.getCell(2).getDateCellValue());
+                usuario.setNombre(row.getCell(0) != null ? row.getCell(0).toString() : "");
+                usuario.setApellidoPaterno(row.getCell(1) != null ? row.getCell(1).toString() : "");
+                // usuario.setFechaNacimiento(row.getCell(2).getDateCellValue());
                usuario.setFechaNacimiento(row.getCell(2) != null && DateUtil.isCellDateFormatted(row.getCell(2)) ? row.getCell(2).getDateCellValue() : null);
                 usuario.setApellidoMaterno(row.getCell(3) != null ?  row.getCell(3).toString() : "");
                 usuario.setUsername(row.getCell(4) != null ?  row.getCell(4).toString() : "");

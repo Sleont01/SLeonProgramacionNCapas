@@ -51,7 +51,7 @@ public class Usuario {
     private String Celular;
     @NotEmpty(message = "Información necesaria")
     private String CURP;
-//    private int IdRol;
+    private int IdRol;
     public Rol Rol;
 
     public List<Direccion> Direcciones;
@@ -77,7 +77,7 @@ public class Usuario {
         this.Telefono = telefono;
         this.Celular = celular;
         this.CURP = curp;
-//        this.IdRol = idrol;
+        this.IdRol = idrol;
         this.Imagen = imagen;
     }
 
@@ -184,13 +184,13 @@ public class Usuario {
         return CURP;
     }
     
-//    public void setIdRol(int idrol){
-//        this.IdRol = idrol;
-//    }
-//    
-//    public int getIdRol(){
-//        return IdRol;
-//    }
+    public void setIdRol(int idrol){
+        this.IdRol = idrol;
+    }
+    
+    public int getIdRol(){
+        return IdRol;
+    }
 
     public Rol getRol() {
         return Rol;
@@ -217,5 +217,16 @@ public class Usuario {
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
+
+    public Usuario(String Nombre, String ApellidoPaterno, String ApellidoMaterno, Rol rol) {
+        this.Nombre = Nombre;
+        this.ApellidoPaterno = ApellidoPaterno;
+        this.ApellidoMaterno = ApellidoMaterno;
+        this.Rol = rol;
+    }
+
+    
+
+    
     
 }

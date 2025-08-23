@@ -5,7 +5,7 @@ import com.digis01.SLeonProgramacionNCapas.ML.Result;
 import com.digis01.SLeonProgramacionNCapas.ML.Usuario;
 public interface IUsuarioDAO {
     
-     Result GetAll();
+     Result GetAll(Usuario usuario);
      
       Result DireccionesByIdUsuario(int idUsuario);
       
