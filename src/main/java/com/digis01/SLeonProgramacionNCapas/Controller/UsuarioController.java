@@ -1,6 +1,7 @@
 package com.digis01.SLeonProgramacionNCapas.Controller;
 
 import com.digis01.SLeonProgramacionNCapas.DAO.ColoniaDAOImplementation;
+import com.digis01.SLeonProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.EstadoDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.UsuarioDAOImplementation;
@@ -57,6 +58,9 @@ public class UsuarioController {
     private UsuarioDAOImplementation usuarioDAOImplementation;
     
     @Autowired
+    private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
+    
+    @Autowired
     private PaisDAOImplementation paisDAOImplementation;
     
     @Autowired
@@ -78,7 +82,8 @@ public class UsuarioController {
     public String Index(Model model){
         
         Result result = usuarioDAOImplementation.GetAll(new Usuario("", "", "", new Rol()));
-
+        
+        usuarioJPADAOImplementation.GetAll();
 
         model.addAttribute("usuarioBusqueda", new Usuario());
 
@@ -93,7 +98,7 @@ public class UsuarioController {
     
      @PostMapping
     public String Index(Model model, @ModelAttribute("usuarioBusqueda") Usuario usuarioBusqueda ) {
-
+        
         Result result = usuarioDAOImplementation.GetAll(usuarioBusqueda);
         
         model.addAttribute("usuarioBusqueda", usuarioBusqueda);
@@ -239,6 +244,13 @@ public class UsuarioController {
         }
 
         return "UsuarioForm";
+    }
+    
+    @PostMapping("/guardarUsuario")
+    public String guardarUsuario(@Valid @ModelAttribute("Usuario") Usuario usuario, BindingResult bindingResult,
+            Model model){
+        
+        return null;
     }
     
     @PostMapping("add") 

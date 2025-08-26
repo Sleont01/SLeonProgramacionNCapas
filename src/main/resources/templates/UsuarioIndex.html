@@ -15,24 +15,36 @@
             <form method="post" th:action="@{/usuario}" th:object="${usuarioBusqueda}">
                 <div class="row">
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                        <input type="text" class="form-control" placeholder="Nombre"th:field="*{Nombre}">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                        <input type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                        <input type="text" class="form-control" placeholder="Apellido Materno"th:field="*{ApellidoMaterno}">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                        <input type="number" class="form-control" placeholder="Id Rol"th:field="*{IdRol}">
-                    </div>
+                    <div class="col-12 col-md-3 mb-3">
+            <div class="input-group">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" placeholder="Nombre" th:field="*{Nombre}">
+            </div>
+        </div>
 
+        <div class="col-12 col-md-3 mb-3">
+            <div class="input-group">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
+            </div>
+        </div>
+                    <div class="col-12 col-md-3 mb-3">
+            <div class="input-group">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
+            </div>
+        </div>
+
+        <div class="col-12 col-md-2 mb-3">
+            <div class="input-group">
+                <span class="input-group-text">@</span>
+                <input type="number" class="form-control" placeholder="Id Rol" th:field="*{Rol.IdRol}">
+            </div>
+        </div>
+                    
+                    <div class="col-12 col-md-1">
                     <button type="submit" class="btn btn-primary input-group mb-3 col-3">Submit</button>
+                      </div>
                 </div>
 
             </form>

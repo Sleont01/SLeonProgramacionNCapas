@@ -313,7 +313,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO{
                 callablestatement.setString(15, usuario.Direcciones.get(0).getNumeroExterior());
                 callablestatement.setString(16, usuario.Direcciones.get(0).getNumeroInterior());
                 callablestatement.setInt(17, usuario.Direcciones.get(0).Colonia.getIdColonia());
-                
+                callablestatement.setString(18, usuario.getImagen());
                 int isCorrect = callablestatement.executeUpdate();
             
                 if (isCorrect == -1) {
