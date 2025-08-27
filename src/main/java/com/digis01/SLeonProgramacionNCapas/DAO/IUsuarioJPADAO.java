@@ -14,4 +14,6 @@ public interface IUsuarioJPADAO {
     
     Result GetAll();
     
+    //Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
+    
 }

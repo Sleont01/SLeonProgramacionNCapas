@@ -1,6 +1,7 @@
 package com.digis01.SLeonProgramacionNCapas.Controller;
 
 import com.digis01.SLeonProgramacionNCapas.DAO.ColoniaDAOImplementation;
+import com.digis01.SLeonProgramacionNCapas.DAO.DireccionDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.EstadoDAOImplementation;
 import com.digis01.SLeonProgramacionNCapas.DAO.MunicipioDAOImplementation;
@@ -75,15 +76,19 @@ public class UsuarioController {
     @Autowired
     private RolDAOImplementation rolDAOImplementation;
     
+    @Autowired
+    private DireccionDAOImplementation direccionDAOImplementation;
     
     
     
     @GetMapping
     public String Index(Model model){
         
-        Result result = usuarioDAOImplementation.GetAll(new Usuario("", "", "", new Rol()));
+      //  Result result = usuarioDAOImplementation.GetAll(new Usuario("", "", "", new Rol()));
         
-        usuarioJPADAOImplementation.GetAll();
+       //  usuarioJPADAOImplementation.GetAll();
+        
+         Result result = usuarioJPADAOImplementation.GetAll();
 
         model.addAttribute("usuarioBusqueda", new Usuario());
 
@@ -246,12 +251,68 @@ public class UsuarioController {
         return "UsuarioForm";
     }
     
-    @PostMapping("/guardarUsuario")
-    public String guardarUsuario(@Valid @ModelAttribute("Usuario") Usuario usuario, BindingResult bindingResult,
-            Model model){
-        
-        return null;
+    @PostMapping("/formEditable")
+    public String procesarFormulario(
+        @RequestParam int IdUsuario,
+        @RequestParam(required = false) Integer IdDireccion,
+        @ModelAttribute("Usuario") Usuario usuario,
+        BindingResult bindingResult,
+        Model model) {
+    
+    // Validaciones básicas
+    if (bindingResult.hasErrors()) {
+        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+        return "UsuarioForm";
     }
+    
+    try {
+        if (IdDireccion == null) {
+            // Editar información del usuario (sin dirección)
+            Result result = usuarioDAOImplementation.Update(usuario);
+            if (result.correct) {
+                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
+            } else {
+                model.addAttribute("error", "Error al actualizar el usuario: " + result.errorMessage);
+                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+                return "UsuarioForm";
+            }
+            
+        } else if (IdDireccion == 0) {
+            // Agregar nueva dirección
+            Direccion nuevaDireccion = usuario.getDirecciones().get(0);
+            nuevaDireccion.setIdUsuario(IdUsuario);
+            
+            Result result = direccionDAOImplementation.Add(nuevaDireccion);
+            if (result.correct) {
+                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
+            } else {
+                model.addAttribute("error", "Error al agregar la dirección: " + result.errorMessage);
+                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+                return "UsuarioForm";
+            }
+            
+        } else {
+            // Editar dirección existente
+            Direccion direccionEditada = usuario.getDirecciones().get(0);
+            direccionEditada.setIdDireccion(IdDireccion);
+            direccionEditada.setIdUsuario(IdUsuario);
+            
+            Result result = direccionDAOImplementation.Update(direccionEditada);
+            if (result.correct) {
+                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
+            } else {
+                model.addAttribute("error", "Error al actualizar la dirección: " + result.errorMessage);
+                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+                return "UsuarioForm";
+            }
+        }
+        
+    } catch (Exception e) {
+        model.addAttribute("error", "Error inesperado: " + e.getMessage());
+        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+        return "UsuarioForm";
+    }
+}
     
     @PostMapping("add") 
     public String Add(@Valid @ModelAttribute("Usuario") Usuario usuario, BindingResult bindingResult,

@@ -6,17 +6,21 @@ package com.digis01.SLeonProgramacionNCapas.JPA;
 
 import com.digis01.SLeonProgramacionNCapas.ML.Direccion;
 import com.digis01.SLeonProgramacionNCapas.ML.Rol;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,67 +29,57 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author digis
  */
+@Entity
 public class Usuario {
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idalumno")
+    @Column(name = "idusuario")
      private int IdUsuario;
-    @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @NotEmpty(message = "Información necesaria")
-    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
+    
     @Column(name = "nombre")
     private String Nombre;
-    @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
-    @Past(message = "La fecha de nacimiento debe ser en el pasado.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+   
     @Column(name = "fechanacimiento")
     private Date FechaNacimiento;
-    @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
-    @Pattern(regexp="^[A-Z][a-záéíóú\\s]+$", message="Solo puede contener letras")
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
-    @Size(min = 3, max = 20, message = "Username debe ser entre 3 a 20 caracteres")
-//    @Pattern(regexp = "^[a-zA-Z0-9_]{8,20}$", 
-//             message = "solo puede contener letras, números, puntos, guiones bajos y guiones")
-    @NotEmpty(message = "Información necesaria")
+   
     @Column(name = "username")
     private String Username;
-    @Pattern(regexp = "^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\\.[a-zA-Z]{2,}$", message = "Formato de correo electrónico inválido")
-    @NotEmpty(message = "Información necesaria")
+   
     @Column(name = "email")
     private String Email;
-    @Size(min = 8, max = 20, message = "Tu contrasena debe tener entre 8 and 20 caracteres")
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "password")
     private String Password;
-    @Pattern(regexp = "^[MF]$", message = "Solo debe ser M o F")
-    @NotEmpty(message = "Información necesaria")
+   
     @Column(name = "sexo")
     private String Sexo;
-    @Pattern(regexp = "^[0-9]{10}$", message = "Solo debe tener 10 digitos y solo acepta numeros")
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "telefono")
     private String Telefono;
-    @Pattern(regexp = "^[0-9]{10}$", message = "Solo debe tener 10 digitos y solo acepta numeros")
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "celular")
     private String Celular;
-    @NotEmpty(message = "Información necesaria")
+    
     @Column(name = "curp")
     private String CURP;
   //  private Integer IdRol;
     @ManyToOne
     @JoinColumn( name = "idrol")
-    public Rol Rol;
+    public com.digis01.SLeonProgramacionNCapas.JPA.Rol Rol;
 
     @Lob
     @Column( name = "imagen")
     private String Imagen;
+    
+    @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<com.digis01.SLeonProgramacionNCapas.JPA.Direccion> Direcciones = new ArrayList<>();
+    
 
     public int getIdUsuario() {
         return IdUsuario;
@@ -93,6 +87,26 @@ public class Usuario {
 
     public void setIdUsuario(int IdUsuario) {
         this.IdUsuario = IdUsuario;
+    }
+    
+    public Usuario() {
+    }
+
+    public Usuario(int IdUsuario, String Nombre, String ApellidoPaterno, Date FechaNacimiento, String ApellidoMaterno, String Username, String Email, String Password, String Sexo, String Telefono, String Celular, String CURP, com.digis01.SLeonProgramacionNCapas.JPA.Rol Rol, String Imagen) {
+        this.IdUsuario = IdUsuario;
+        this.Nombre = Nombre;
+        this.ApellidoPaterno = ApellidoPaterno;
+        this.FechaNacimiento = FechaNacimiento;
+        this.ApellidoMaterno = ApellidoMaterno;
+        this.Username = Username;
+        this.Email = Email;
+        this.Password = Password;
+        this.Sexo = Sexo;
+        this.Telefono = Telefono;
+        this.Celular = Celular;
+        this.CURP = CURP;
+        this.Rol = Rol;
+        this.Imagen = Imagen;
     }
 
     public String getNombre() {
@@ -183,13 +197,16 @@ public class Usuario {
         this.CURP = CURP;
     }
 
-    public Rol getRol() {
+    public com.digis01.SLeonProgramacionNCapas.JPA.Rol getRol() {
         return Rol;
     }
 
-    public void setRol(Rol Rol) {
+    public void setRol(com.digis01.SLeonProgramacionNCapas.JPA.Rol Rol) {
         this.Rol = Rol;
     }
+
+    
+    
 
     public String getImagen() {
         return Imagen;
@@ -197,10 +214,6 @@ public class Usuario {
 
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
-    }
-
-    public Object getDirecciones() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 
