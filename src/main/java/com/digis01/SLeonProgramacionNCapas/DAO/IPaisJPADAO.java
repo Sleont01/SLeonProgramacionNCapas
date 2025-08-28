@@ -10,14 +10,8 @@ import com.digis01.SLeonProgramacionNCapas.ML.Result;
  *
  * @author digis
  */
-public interface IUsuarioJPADAO {
+public interface IPaisJPADAO {
     
     Result GetAll();
-    
-    Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
-    
-    Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
-    
-    Result Delete(int IdUsuario);
     
 }

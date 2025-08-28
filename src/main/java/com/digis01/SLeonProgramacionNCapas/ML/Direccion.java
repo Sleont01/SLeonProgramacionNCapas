@@ -1,5 +1,7 @@
 package com.digis01.SLeonProgramacionNCapas.ML;
 
+import com.digis01.SLeonProgramacionNCapas.JPA.Usuario;
+
 
 public class Direccion {
     
@@ -8,6 +10,7 @@ public class Direccion {
     private String NumeroInterior;
     private String NumeroExterior;
     public Colonia Colonia;
+    public Usuario Usuario;
     
         public Direccion(int IdDireccion) {
         this.IdDireccion = IdDireccion;

@@ -23,6 +23,10 @@ public class Colonia {
     @JoinColumn(name = "idmunicipio")
     public Municipio Municipio;
     
+     public Colonia(int IdColonia) {
+        this.IdColonia = IdColonia;
+    }
+    
     public Colonia() {
     }
 

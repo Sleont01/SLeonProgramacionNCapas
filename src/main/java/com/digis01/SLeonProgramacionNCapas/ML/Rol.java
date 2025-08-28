@@ -13,6 +13,11 @@ public class Rol {
         this.IdRol = idRol;
         this.Nombre = nombre;
     }
+
+  
+
+    
+
     
     
 

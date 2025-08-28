@@ -69,6 +69,7 @@ public class Usuario {
     @Column(name = "curp")
     private String CURP;
   //  private Integer IdRol;
+    
     @ManyToOne
     @JoinColumn( name = "idrol")
     public com.digis01.SLeonProgramacionNCapas.JPA.Rol Rol;
@@ -80,6 +81,64 @@ public class Usuario {
     @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<com.digis01.SLeonProgramacionNCapas.JPA.Direccion> Direcciones = new ArrayList<>();
     
+    public Usuario() {
+    }
+    
+    public Usuario (com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML){
+        this.IdUsuario = usuarioML.getIdUsuario();
+        this.Nombre = usuarioML.getNombre();
+        this.ApellidoPaterno = usuarioML.getApellidoPaterno();
+        this.FechaNacimiento = usuarioML.getFechaNacimiento();
+        this.ApellidoMaterno = usuarioML.getApellidoMaterno();
+        this.Username = usuarioML.getUsername();
+        this.Email = usuarioML.getEmail();
+        this.Password = usuarioML.getPassword();
+        this.Sexo = usuarioML.getSexo();
+        this.Telefono = usuarioML.getTelefono();
+        this.Celular = usuarioML.getCelular();
+        this.CURP = usuarioML.getCURP();
+        this.Imagen = usuarioML.getImagen();
+        this.Imagen = usuarioML.getImagen();
+        
+        this.Rol = new com.digis01.SLeonProgramacionNCapas.JPA.Rol();
+        this.Rol.setIdRol(usuarioML.Rol.getIdRol());
+        this.Rol.setNombre(usuarioML.Rol.getNombre());
+        
+        
+        if (usuarioML.Direcciones != null && usuarioML.Direcciones.size() > 0) {
+            this.Direcciones = new ArrayList<>();
+        for (com.digis01.SLeonProgramacionNCapas.ML.Direccion Direccione : usuarioML.Direcciones) { //foreach que usa Modelos ML para iterar
+            com.digis01.SLeonProgramacionNCapas.JPA.Direccion direccion = new com.digis01.SLeonProgramacionNCapas.JPA.Direccion(); //Instancia de JPA para vaciar ML en un JPA
+            direccion.setCalle(Direccione.getCalle());
+            direccion.setNumeroInterior(Direccione.getNumeroInterior());
+            direccion.setNumeroExterior(Direccione.getNumeroExterior());
+            
+            direccion.Colonia = new com.digis01.SLeonProgramacionNCapas.JPA.Colonia();
+            direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
+            direccion.Colonia.setNombre(Direccione.Colonia.getNombre());
+            direccion.Colonia.setCodigoPostal(Direccione.Colonia.getCodigoPostal());
+
+            direccion.Colonia.Municipio = new com.digis01.SLeonProgramacionNCapas.JPA.Municipio();
+            direccion.Colonia.Municipio.setIdMunicipio(Direccione.Colonia.Municipio.getIdMunicipio());
+            direccion.Colonia.Municipio.setNombre(Direccione.Colonia.Municipio.getNombre());
+
+            direccion.Colonia.Municipio.Estado = new com.digis01.SLeonProgramacionNCapas.JPA.Estado();
+            direccion.Colonia.Municipio.Estado.setIdEstado(Direccione.Colonia.Municipio.Estado.getIdEstado());
+            direccion.Colonia.Municipio.Estado.setNombre(Direccione.Colonia.Municipio.Estado.getNombre());
+
+            direccion.Colonia.Municipio.Estado.Pais = new com.digis01.SLeonProgramacionNCapas.JPA.Pais();
+            direccion.Colonia.Municipio.Estado.Pais.setIdPais(Direccione.Colonia.Municipio.Estado.Pais.getIdPais());
+            direccion.Colonia.Municipio.Estado.Pais.setNombre(Direccione.Colonia.Municipio.Estado.Pais.getNombre());
+            direccion.Usuario = this;
+            
+           
+            Direcciones.add(direccion); //agregar direcciones vaciadas de ML a JPA
+        }
+            
+        }
+    }
+    
+    
 
     public int getIdUsuario() {
         return IdUsuario;
@@ -88,9 +147,7 @@ public class Usuario {
     public void setIdUsuario(int IdUsuario) {
         this.IdUsuario = IdUsuario;
     }
-    
-    public Usuario() {
-    }
+
 
     public Usuario(int IdUsuario, String Nombre, String ApellidoPaterno, Date FechaNacimiento, String ApellidoMaterno, String Username, String Email, String Password, String Sexo, String Telefono, String Celular, String CURP, com.digis01.SLeonProgramacionNCapas.JPA.Rol Rol, String Imagen) {
         this.IdUsuario = IdUsuario;
@@ -215,6 +272,8 @@ public class Usuario {
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
+    
+    
 
 
 

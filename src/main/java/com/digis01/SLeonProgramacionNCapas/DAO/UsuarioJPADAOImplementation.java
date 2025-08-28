@@ -7,6 +7,7 @@ import com.digis01.SLeonProgramacionNCapas.ML.Result;
 import com.digis01.SLeonProgramacionNCapas.ML.Rol;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,80 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO{
             
 
         } catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML) {
+        Result result = new Result();
+
+        try {
+
+            Usuario usuarioJPA = new Usuario(usuarioML);
+
+            entityManager.persist(usuarioJPA);
+            
+            result.correct = true; 
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public Result Delete(int IdUsuario) {
+        Result result = new Result();
+        
+        try {
+            
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
+            entityManager.remove(usuarioJPA);
+            
+            result.correct = true; 
+            
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex; 
+        }
+        
+        return result;
+    }
+  
+    @Transactional
+    @Override
+    public Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML) {
+        Result result = new Result();
+
+        try {
+           
+            Usuario existente = entityManager.find(Usuario.class, usuarioML.getIdUsuario());
+            if (existente == null) {
+                result.correct = false;
+                result.errorMessage = "El usuario no existe en la base de datos.";
+                return result;
+            }
+
+            
+            Usuario usuarioJPA = new Usuario(usuarioML);
+
+            
+            entityManager.merge(usuarioJPA);
+
+            result.correct = true;
+
+        } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;

@@ -339,13 +339,24 @@ public class UsuarioController {
 
                 }
             }
-                Result result = usuarioDAOImplementation.Add(usuario);
+               // Result result = usuarioDAOImplementation.Add(usuario);
+                Result result = usuarioJPADAOImplementation.ADD(usuario);
                 return "redirect:/usuario";
     
 //    Result result = usuarioDAOImplementation.Add(usuario);
 //        return "redirect:/usuario";
         }   
     }
+    
+    @GetMapping("delete/{IdUsuario}")
+    public String Delete(@PathVariable("IdUsuario") int IdUsuario){
+        
+        Result result = usuarioJPADAOImplementation.Delete(IdUsuario);
+        
+        return "redirect:/usuario";
+    }
+    
+    
     
     
     @GetMapping("getEstadosByPais/{IdPais}")

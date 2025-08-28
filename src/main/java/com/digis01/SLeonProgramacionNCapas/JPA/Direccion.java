@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.List;
 
 @Entity
 public class Direccion {
@@ -30,22 +31,51 @@ public class Direccion {
     @JoinColumn(name = "idusuario", nullable = false)
     public Usuario Usuario;
     
+    
      public Direccion() {
     }
+     
+     public Direccion(com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML){
+         this.Calle = direccionML.getCalle();
+         this.NumeroExterior = direccionML.getNumeroExterior();
+         this.NumeroInterior = direccionML.getNumeroInterior();
+         
+         if(direccionML.getColonia() != null){
+             this.Colonia = new Colonia();
+             this.Colonia.setIdColonia(direccionML.getColonia().getIdColonia());
+            this.Colonia.setNombre(direccionML.getColonia().getNombre());
+            this.Colonia.setCodigoPostal(direccionML.getColonia().getCodigoPostal());
+            
+            Colonia.Municipio = new Municipio();
+            Colonia.Municipio.setIdMunicipio(Colonia.Municipio.getIdMunicipio());
+            Colonia.Municipio.setNombre(Colonia.Municipio.getNombre());
 
-    public Direccion(int IdDireccion, String Calle, String NumeroInterior, String NumeroExterior, Colonia Colonia, Usuario Usuario) {
+             Colonia.Municipio.Estado = new Estado();
+            Colonia.Municipio.Estado.setIdEstado(Colonia.Municipio.Estado.getIdEstado());
+            Colonia.Municipio.Estado.setNombre(Colonia.Municipio.Estado.getNombre());
+
+            Colonia.Municipio.Estado.Pais = new Pais();
+            Colonia.Municipio.Estado.Pais.setIdPais(Colonia.Municipio.Estado.Pais.getIdPais());
+            Colonia.Municipio.Estado.Pais.setNombre(Colonia.Municipio.Estado.Pais.getNombre());
+         }
+         
+         
+     }
+
+    public Direccion(int IdDireccion, String Calle, String NumeroInterior, String NumeroExterior, Colonia Colonia) {
         this.IdDireccion = IdDireccion;
         this.Calle = Calle;
         this.NumeroInterior = NumeroInterior;
         this.NumeroExterior = NumeroExterior;
         this.Colonia = Colonia;
-        this.Usuario = Usuario;
     }
      
 
     public Direccion(int IdDireccion) {
         this.IdDireccion = IdDireccion;
     }
+
+  
 
     public int getIdDireccion() {
         return IdDireccion;

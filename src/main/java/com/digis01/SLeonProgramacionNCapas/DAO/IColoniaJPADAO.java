@@ -10,14 +10,9 @@ import com.digis01.SLeonProgramacionNCapas.ML.Result;
  *
  * @author digis
  */
-public interface IUsuarioJPADAO {
+public interface IColoniaJPADAO {
     
-    Result GetAll();
+    Result ColoniaByMunicipio(int IdMunicipio);
     
-    Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
-    
-    Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
-    
-    Result Delete(int IdUsuario);
     
 }
