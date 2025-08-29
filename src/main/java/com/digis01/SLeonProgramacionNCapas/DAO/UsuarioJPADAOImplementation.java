@@ -99,27 +99,40 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO{
 
         try {
            
-            Usuario existente = entityManager.find(Usuario.class, usuarioML.getIdUsuario());
-            if (existente == null) {
-                result.correct = false;
-                result.errorMessage = "El usuario no existe en la base de datos.";
-                return result;
-            }
-
-            
             Usuario usuarioJPA = new Usuario(usuarioML);
-
+            Usuario usuarioBD = entityManager.find(Usuario.class, usuarioML.getIdUsuario());
+            
+            usuarioJPA.Direcciones = usuarioBD.Direcciones;
             
             entityManager.merge(usuarioJPA);
-
             result.correct = true;
-
+            
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
 
+        return result;
+    }
+
+    @Override
+    public Result GetById(int IdUsuario) {
+        Result result = new Result();
+        
+        try{
+            
+            Usuario usuarioJPA =  entityManager.find(Usuario.class, IdUsuario);
+            com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML = new com.digis01.SLeonProgramacionNCapas.ML.Usuario(usuarioJPA);
+            result.object = usuarioML;
+            result.correct = true;
+            
+        } catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
         return result;
     }
 

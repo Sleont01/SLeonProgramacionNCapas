@@ -35,29 +35,19 @@ public class Direccion {
      public Direccion() {
     }
      
-     public Direccion(com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML){
+     public Direccion(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML){
+         
+         com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML = usuarioML.Direcciones.get(0);
+         
+         this.IdDireccion = direccionML.getIdDireccion();
          this.Calle = direccionML.getCalle();
          this.NumeroExterior = direccionML.getNumeroExterior();
          this.NumeroInterior = direccionML.getNumeroInterior();
          
-         if(direccionML.getColonia() != null){
-             this.Colonia = new Colonia();
-             this.Colonia.setIdColonia(direccionML.getColonia().getIdColonia());
-            this.Colonia.setNombre(direccionML.getColonia().getNombre());
-            this.Colonia.setCodigoPostal(direccionML.getColonia().getCodigoPostal());
-            
-            Colonia.Municipio = new Municipio();
-            Colonia.Municipio.setIdMunicipio(Colonia.Municipio.getIdMunicipio());
-            Colonia.Municipio.setNombre(Colonia.Municipio.getNombre());
-
-             Colonia.Municipio.Estado = new Estado();
-            Colonia.Municipio.Estado.setIdEstado(Colonia.Municipio.Estado.getIdEstado());
-            Colonia.Municipio.Estado.setNombre(Colonia.Municipio.Estado.getNombre());
-
-            Colonia.Municipio.Estado.Pais = new Pais();
-            Colonia.Municipio.Estado.Pais.setIdPais(Colonia.Municipio.Estado.Pais.getIdPais());
-            Colonia.Municipio.Estado.Pais.setNombre(Colonia.Municipio.Estado.Pais.getNombre());
-         }
+         this.Colonia = new Colonia();
+        this.Colonia.setIdColonia(direccionML.Colonia.getIdColonia());
+        this.Usuario = new Usuario();
+        this.Usuario.setIdUsuario(usuarioML.getIdAlumno());
          
          
      }

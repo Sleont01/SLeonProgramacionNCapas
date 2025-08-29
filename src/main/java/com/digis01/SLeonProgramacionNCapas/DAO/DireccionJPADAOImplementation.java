@@ -26,12 +26,12 @@ public class DireccionJPADAOImplementation implements IDireccionJPADAO {
     
     @Transactional
     @Override
-    public Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML) {
+    public Result ADD(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML) {
         Result result = new Result();
 
         try {
 
-            Direccion direccionJPA = new Direccion(direccionML);
+            Direccion direccionJPA = new Direccion(usuarioML);
 
             entityManager.persist(direccionJPA);
             
@@ -46,41 +46,29 @@ public class DireccionJPADAOImplementation implements IDireccionJPADAO {
         return result;
     }
     
-    @Transactional
+@Transactional
 @Override
-public Result Update(com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML) {
-    Result result = new Result();
-
-    try {
+public Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML) {
        
-        Direccion existente = entityManager.find(Direccion.class, direccionML.getIdDireccion());
-        if (existente == null) {
+        Result result = new Result();
+        try {
+            Direccion direccionJPA = new Direccion(usuarioML);
+            entityManager.merge(direccionJPA);
+            result.correct = true;
+        } catch (Exception ex) {
             result.correct = false;
-            result.errorMessage = "La dirección no existe en la base de datos.";
-            return result;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
         }
 
-        
-        Direccion direccionJPA = new Direccion(direccionML);
-
-     
-        entityManager.merge(direccionJPA);
-
-        result.correct = true;
-
-    } catch (Exception ex) {
-        result.correct = false;
-        result.errorMessage = ex.getLocalizedMessage();
-        result.ex = ex;
-    }
-
-    return result;
+        return result;
 }
+    
 
+    @Transactional
+    @Override
+    public Result Delete(int IdDireccion) {
 
-   @Transactional
-@Override
-public Result Delete(int IdDireccion) {
     Result result = new Result();
 
     try {
@@ -106,5 +94,9 @@ public Result Delete(int IdDireccion) {
 
     return result;
 }
-    
-}
+        
+    }
+
+
+
+

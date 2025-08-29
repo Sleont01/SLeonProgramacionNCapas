@@ -19,6 +19,7 @@ public class Rol {
     public Rol(){
     
     }
+    
 
     public Rol(int idRol, String nombre) {
         this.IdRol = idRol;

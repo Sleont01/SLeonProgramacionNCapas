@@ -25,6 +25,15 @@ public class Municipio {
     
     public Municipio() {
     }
+    
+    public Municipio(com.digis01.SLeonProgramacionNCapas.ML.Municipio municipioML) {
+        this.IdMunicipio = municipioML.getIdMunicipio();
+        this.Nombre = municipioML.getNombre();
+
+       
+         this.Estado = new Estado();
+         this.Estado.setIdEstado(municipioML.Estado.getIdEstado());
+    }
     public Municipio(int IdMunicipio, String Nombre, com.digis01.SLeonProgramacionNCapas.JPA.Estado Estado) {
         this.IdMunicipio = IdMunicipio;
         this.Nombre = Nombre;

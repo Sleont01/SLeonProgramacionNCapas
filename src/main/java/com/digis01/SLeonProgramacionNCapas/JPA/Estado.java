@@ -1,6 +1,5 @@
 package com.digis01.SLeonProgramacionNCapas.JPA;
 
-import com.digis01.SLeonProgramacionNCapas.ML.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +23,15 @@ public class Estado {
 
     
     public Estado() {
+    }
+    
+     public Estado(com.digis01.SLeonProgramacionNCapas.ML.Estado estadoML) {
+        this.IdEstado = estadoML.getIdEstado();
+        this.Nombre = estadoML.getNombre();
+
+       
+         this.Pais = new Pais();
+         this.Pais.setIdPais(estadoML.Pais.getIdPais());
     }
     
     public Estado(int IdEstado, String Nombre, com.digis01.SLeonProgramacionNCapas.JPA.Pais Pais) {

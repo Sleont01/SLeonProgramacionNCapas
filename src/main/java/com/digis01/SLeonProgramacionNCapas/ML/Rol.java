@@ -8,6 +8,11 @@ public class Rol {
     public Rol(){
     
     }
+    
+    public Rol(com.digis01.SLeonProgramacionNCapas.JPA.Rol rolJPA){
+        this.IdRol = rolJPA.getIdRol();
+        this.Nombre = rolJPA.getNombre();
+    }
 
     public Rol(int idRol, String nombre) {
         this.IdRol = idRol;

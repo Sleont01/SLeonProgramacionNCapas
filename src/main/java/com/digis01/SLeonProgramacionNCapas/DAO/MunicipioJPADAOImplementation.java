@@ -4,7 +4,7 @@
  */
 package com.digis01.SLeonProgramacionNCapas.DAO;
 
-import com.digis01.SLeonProgramacionNCapas.JPA.Colonia;
+import com.digis01.SLeonProgramacionNCapas.JPA.Municipio;
 import com.digis01.SLeonProgramacionNCapas.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -18,26 +18,27 @@ import org.springframework.stereotype.Repository;
  * @author digis
  */
 @Repository
-public class ColoniaJPADAOImplementation implements IColoniaJPADAO{
+public class MunicipioJPADAOImplementation implements IMunicipioJPADAO{
     
     @Autowired
     private EntityManager entityManager;
-
+    
     @Override
-    public Result ColoniaByMunicipio(int IdMunicipio) {
+    public Result MunicipioByEstado(int IdEstado) {
+
         Result result = new Result();
 
         try {
 
-            TypedQuery<Colonia> queryColonia = entityManager.createQuery("FROM Colonia WHERE Municipio.IdMunicipio = :IdMunicipio", Colonia.class);       
-            queryColonia.setParameter("IdMunicipio", IdMunicipio);
+            TypedQuery<Municipio> queryMunicipio = entityManager.createQuery("FROM Municipio WHERE Estado.IdEstado = :IdEstado", Municipio.class);       
+            queryMunicipio.setParameter("IdEstado", IdEstado);
 
-            List<Colonia> colonias = queryColonia.getResultList();
+            List<Municipio> municipios = queryMunicipio.getResultList();
 
             result.objects = new ArrayList<>();
             
-            for (Colonia colonia : colonias) {
-                result.objects.add(colonia);
+            for (Municipio municipio : municipios) {
+                result.objects.add(municipio);
             }
             
             result.correct = true;
@@ -51,8 +52,5 @@ public class ColoniaJPADAOImplementation implements IColoniaJPADAO{
         return result;
     }
     
-    }
     
-    
-    
-
+}

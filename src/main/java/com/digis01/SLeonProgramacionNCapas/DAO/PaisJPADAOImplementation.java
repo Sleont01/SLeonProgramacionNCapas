@@ -1,39 +1,35 @@
 
 package com.digis01.SLeonProgramacionNCapas.DAO;
 
-import com.digis01.SLeonProgramacionNCapas.JPA.Rol;
+import com.digis01.SLeonProgramacionNCapas.JPA.Pais;
 import com.digis01.SLeonProgramacionNCapas.ML.Result;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository
-public class RolJPADAOImplementation implements IRolJPADAO{
+public class PaisJPADAOImplementation implements IPaisJPADAO{
     
     @Autowired
     private EntityManager entityManager;
 
     @Override
     public Result GetAll() {
-        
         Result result = new Result();
         
         try {
             
           //  TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario", Usuario.class);
-           TypedQuery<Rol> queryRol = entityManager.createQuery("FROM Rol ORDER BY IdRol", Rol.class);
-            List<Rol> roles = queryRol.getResultList();
+           TypedQuery<Pais> queryPais = entityManager.createQuery("FROM Pais ORDER BY IdPais", Pais.class);
+            List<Pais> paises = queryPais.getResultList();
 
             result.objects = new ArrayList<>();
             
-            for (Rol rol : roles) {
-                result.objects.add(new com.digis01.SLeonProgramacionNCapas.ML.Rol(rol));
+            for (Pais pais : paises) {
+                result.objects.add(new com.digis01.SLeonProgramacionNCapas.ML.Pais(pais));
             }
             
             result.correct = true;
@@ -47,9 +43,6 @@ public class RolJPADAOImplementation implements IRolJPADAO{
         }
 
         return result;
-        
-
-        
     }
     
 }

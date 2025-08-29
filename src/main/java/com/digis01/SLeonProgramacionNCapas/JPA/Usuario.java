@@ -85,10 +85,10 @@ public class Usuario {
     }
     
     public Usuario (com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML){
-        this.IdUsuario = usuarioML.getIdUsuario();
+        this.IdUsuario = usuarioML.getIdAlumno();
         this.Nombre = usuarioML.getNombre();
         this.ApellidoPaterno = usuarioML.getApellidoPaterno();
-        this.FechaNacimiento = usuarioML.getFechaNacimiento();
+        this.FechaNacimiento = new java.sql.Date(usuarioML.getFechaNacimiento().getTime());
         this.ApellidoMaterno = usuarioML.getApellidoMaterno();
         this.Username = usuarioML.getUsername();
         this.Email = usuarioML.getEmail();
@@ -102,11 +102,12 @@ public class Usuario {
         
         this.Rol = new com.digis01.SLeonProgramacionNCapas.JPA.Rol();
         this.Rol.setIdRol(usuarioML.Rol.getIdRol());
-        this.Rol.setNombre(usuarioML.Rol.getNombre());
         
         
-        if (usuarioML.Direcciones != null && usuarioML.Direcciones.size() > 0) {
-            this.Direcciones = new ArrayList<>();
+         if (usuarioML.Direcciones.get(0).getIdDireccion() == -1) {
+            usuarioML.Direcciones = null;
+        } else {
+       
         for (com.digis01.SLeonProgramacionNCapas.ML.Direccion Direccione : usuarioML.Direcciones) { //foreach que usa Modelos ML para iterar
             com.digis01.SLeonProgramacionNCapas.JPA.Direccion direccion = new com.digis01.SLeonProgramacionNCapas.JPA.Direccion(); //Instancia de JPA para vaciar ML en un JPA
             direccion.setCalle(Direccione.getCalle());
@@ -115,20 +116,6 @@ public class Usuario {
             
             direccion.Colonia = new com.digis01.SLeonProgramacionNCapas.JPA.Colonia();
             direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
-            direccion.Colonia.setNombre(Direccione.Colonia.getNombre());
-            direccion.Colonia.setCodigoPostal(Direccione.Colonia.getCodigoPostal());
-
-            direccion.Colonia.Municipio = new com.digis01.SLeonProgramacionNCapas.JPA.Municipio();
-            direccion.Colonia.Municipio.setIdMunicipio(Direccione.Colonia.Municipio.getIdMunicipio());
-            direccion.Colonia.Municipio.setNombre(Direccione.Colonia.Municipio.getNombre());
-
-            direccion.Colonia.Municipio.Estado = new com.digis01.SLeonProgramacionNCapas.JPA.Estado();
-            direccion.Colonia.Municipio.Estado.setIdEstado(Direccione.Colonia.Municipio.Estado.getIdEstado());
-            direccion.Colonia.Municipio.Estado.setNombre(Direccione.Colonia.Municipio.Estado.getNombre());
-
-            direccion.Colonia.Municipio.Estado.Pais = new com.digis01.SLeonProgramacionNCapas.JPA.Pais();
-            direccion.Colonia.Municipio.Estado.Pais.setIdPais(Direccione.Colonia.Municipio.Estado.Pais.getIdPais());
-            direccion.Colonia.Municipio.Estado.Pais.setNombre(Direccione.Colonia.Municipio.Estado.Pais.getNombre());
             direccion.Usuario = this;
             
            
@@ -137,7 +124,7 @@ public class Usuario {
             
         }
     }
-    
+      
     
 
     public int getIdUsuario() {

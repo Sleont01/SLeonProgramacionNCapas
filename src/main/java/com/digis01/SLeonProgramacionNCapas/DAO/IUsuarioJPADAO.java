@@ -20,4 +20,6 @@ public interface IUsuarioJPADAO {
     
     Result Delete(int IdUsuario);
     
+    Result GetById(int IdUsuario);
+    
 }

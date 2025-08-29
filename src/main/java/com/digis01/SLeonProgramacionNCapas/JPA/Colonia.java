@@ -29,6 +29,16 @@ public class Colonia {
     
     public Colonia() {
     }
+    
+      public Colonia(com.digis01.SLeonProgramacionNCapas.ML.Colonia coloniaML) {
+        this.IdColonia = coloniaML.getIdColonia();
+        this.Nombre = coloniaML.getNombre();
+        this.CodigoPostal = coloniaML.getCodigoPostal();
+
+       
+         this.Municipio = new Municipio();
+         this.Municipio.setIdMunicipio(coloniaML.Municipio.getIdMunicipio());
+    }
 
     public Colonia(int IdColonia, String Nombre, String CodigoPostal, com.digis01.SLeonProgramacionNCapas.JPA.Municipio Municipio) {
         this.IdColonia = IdColonia;
