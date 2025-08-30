@@ -85,7 +85,7 @@ public class Usuario {
     }
     
     public Usuario (com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML){
-        this.IdUsuario = usuarioML.getIdAlumno();
+        this.IdUsuario = usuarioML.getIdUsuario();
         this.Nombre = usuarioML.getNombre();
         this.ApellidoPaterno = usuarioML.getApellidoPaterno();
         this.FechaNacimiento = new java.sql.Date(usuarioML.getFechaNacimiento().getTime());

@@ -19,4 +19,6 @@ public interface IDireccionJPADAO {
     
     Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML);
     
+    Result GetById(int IdDireccion);
+    
 }

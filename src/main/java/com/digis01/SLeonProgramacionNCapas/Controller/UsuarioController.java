@@ -203,10 +203,18 @@ public class UsuarioController {
             usuario.Direcciones = new ArrayList<>();
             usuario.Direcciones.add(new Direccion(-1));
         
-        model.addAttribute("Usuario", usuario); 
-       // model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-   
+
+             if (result.correct) {
+                model.addAttribute("Usuario", result.object);
+                //model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                model.addAttribute("roles", rolJPADAOImplementation.GetAll().objects);
+
+            } else {
+                model.addAttribute("Usuario", null);
+            }
+
+          
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
     }
                
         else if (IdDireccion == 0) {//Agregar direccion
@@ -216,48 +224,40 @@ public class UsuarioController {
         usuario.getDirecciones().add(new Direccion(0)); 
         
         model.addAttribute("Usuario", usuario);
+        model.addAttribute("roles", rolJPADAOImplementation.GetAll().objects);
         
      //   model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+        model.addAttribute("paises", paisJPADAOImplementation.GetAll().objects);
+       
             
         } else { // editar direccion
-            /*recuperar información de la direccion*/
             
-             Result result = usuarioDAOImplementation.DireccionesByIdUsuario(IdUsuario);
+            
+             Result result = direccionJPADAOImplementation.GetById(IdDireccion);
     
-    if (result.correct && result.object != null) {
-        Usuario usuario = (Usuario) result.object;
+    if (result.correct) {
+        
+        Direccion direccionML = (Direccion) result.object;
+        
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(IdUsuario);
+        usuario.setDirecciones(new ArrayList<>());
+        usuario.getDirecciones().add(direccionML);
+        
+        model.addAttribute("Usuario", usuario);
 
        
-        if (usuario.getDirecciones() != null) {
-            
-            Direccion direccionSeleccionada = null;
-            for (Direccion direccion : usuario.getDirecciones()) {
-                if (direccion.getIdDireccion() == IdDireccion) {
-                    direccionSeleccionada = direccion;
-                    break;
-                }
-            }
+        model.addAttribute("paises", paisJPADAOImplementation.GetAll().objects);
+        model.addAttribute("estados",estadoJPADAOImplementation.EstadoByPais(0).objects);
+        
+        
+        
 
-            if (direccionSeleccionada != null) {
-                List<Direccion> listaDirecciones = new ArrayList<>();
-                listaDirecciones.add(direccionSeleccionada);
-                usuario.setDirecciones(listaDirecciones);
-
-                model.addAttribute("Usuario", usuario);
-                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-            } else {
-                model.addAttribute("error", "No se encontró la dirección especificada para este usuario.");
-                return "Error";
-            }
-        } else {
-            model.addAttribute("error", "El usuario no tiene direcciones registradas.");
-            return "Error";
-        }
     } else {
-        model.addAttribute("error", "No se pudo cargar la información del usuario.");
-        return "Error";
+        model.addAttribute("Usuario", null);
     }
+
+           
         }
 
         return "UsuarioForm";
@@ -272,71 +272,128 @@ public class UsuarioController {
     
     }
     
-    @PostMapping("/formEditable")
-    public String procesarFormulario(
-        @RequestParam int IdUsuario,
-        @RequestParam(required = false) Integer IdDireccion,
-        @ModelAttribute("Usuario") Usuario usuario,
-        BindingResult bindingResult,
-        Model model) {
-    
-    // Validaciones básicas
-    if (bindingResult.hasErrors()) {
-       // model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-        model.addAttribute("paises", paisJPADAOImplementation.GetAll().objects);
-        return "UsuarioForm";
-    }
-    
-    try {
-        if (IdDireccion == null) {
-            // Editar información del usuario (sin dirección)
-            Result result = usuarioJPADAOImplementation.Update(usuario);
-            if (result.correct) {
-                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
-            } else {
-                model.addAttribute("error", "Error al actualizar el usuario: " + result.errorMessage);
-                model.addAttribute("paises", paisJPADAOImplementation.GetAll().objects);
+      @PostMapping("add")
+    public String Add(@Valid
+            @ModelAttribute("Usuario") Usuario usuario,
+            BindingResult bindingResult,
+            Model model,
+            @RequestParam(name = "imagenFile", required = false) MultipartFile imagen) {
+
+        if (usuario.getIdUsuario() == 0) { //Agregar usuario
+            //Si bindingResult tiene errores...
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("Usuario", usuario);
+
+                //Volver a pintar la lista de roles
+                model.addAttribute("roles", rolJPADAOImplementation.GetAll().objects);
+
                 return "UsuarioForm";
-            }
-            
-        } else if (IdDireccion == 0) {
-            // Agregar nueva dirección
-            Direccion nuevaDireccion = usuario.getDirecciones().get(0);
-            nuevaDireccion.setIdUsuario(IdUsuario);
-            
-            Result result = direccionDAOImplementation.Add(nuevaDireccion);
-            if (result.correct) {
-                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
             } else {
-                model.addAttribute("error", "Error al agregar la dirección: " + result.errorMessage);
-                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-                return "UsuarioForm";
-            }
-            
-        } else {
-            // Editar dirección existente
-            Direccion direccionEditada = usuario.getDirecciones().get(0);
-            direccionEditada.setIdDireccion(IdDireccion);
-            direccionEditada.setIdUsuario(IdUsuario);
-            
-            Result result = direccionDAOImplementation.Update(direccionEditada);
-            if (result.correct) {
-                return "redirect:/usuario/detalle?IdUsuario=" + IdUsuario;
-            } else {
-                model.addAttribute("error", "Error al actualizar la dirección: " + result.errorMessage);
-                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-                return "UsuarioForm";
+
+                //Imagen
+                if (imagen != null && imagen.getOriginalFilename() != null) {
+                    String nombre = imagen.getOriginalFilename();
+                    //archivo.jpg
+                    //[archivo,jpg]
+                    String extension = nombre.split("\\.")[1];
+                    if (extension.equals("jpg")) {
+                        try {
+                            byte[] bytes = imagen.getBytes();
+                            String base64Image = Base64.getEncoder().encodeToString(bytes);
+                            usuario.setImagen(base64Image);
+                        } catch (Exception ex) {
+                            System.out.println("Error");
+                        }
+
+                    }
+                }
+
+                //Autoinferencia
+                //Result result = usuarioDAOImplementation.Add(usuario);
+                Result result = usuarioJPADAOImplementation.ADD(usuario);
+                
+                return "redirect:/usuario";
             }
         }
-        
-    } catch (Exception e) {
-        model.addAttribute("error", "Error inesperado: " + e.getMessage());
-        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-        return "UsuarioForm";
+
+        if (usuario.getIdUsuario() > 0) {
+            if (usuario.Direcciones.get(0).getIdDireccion() == -1) { //Editar usuario
+                //Si bindingResult tiene errores...
+                //if (bindingResult.hasErrors()) {
+                model.addAttribute("Usuario", usuario);
+
+                //Volver a pintar la lista de roles
+                model.addAttribute("roles", rolJPADAOImplementation.GetAll().objects);
+
+                //return "UsuarioForm";
+                //} else {
+                //Imagen
+                if (imagen != null) {
+                    String nombre = imagen.getOriginalFilename();
+                    //archivo.jpg
+                    //[archivo,jpg]
+                    String extension = nombre.split("\\.")[1];
+                    if (extension.equals("jpg")) {
+                        try {
+                            byte[] bytes = imagen.getBytes();
+                            String base64Image = Base64.getEncoder().encodeToString(bytes);
+                            usuario.setImagen(base64Image);
+                        } catch (Exception ex) {
+                            System.out.println("Error");
+                        }
+
+                    }
+                }
+
+                //Autoinferencia
+                //Result result = usuarioDAOImplementation.EditarUsuario(usuario);
+                Result result = usuarioJPADAOImplementation.Update(usuario);
+                
+                return "redirect:/usuario";
+                //}
+
+            } else if (usuario.Direcciones.get(0).getIdDireccion() == 0) { //Agregar direccion
+                //Si bindingResult tiene errores...
+                //if (bindingResult.hasErrors()) {
+                model.addAttribute("Usuario", usuario);
+
+                //return "UsuarioForm";
+                //} else {
+                //Autoinferencia
+                //Result result = usuarioDAOImplementation.AgregarDireccion(usuario);
+                usuario.Direcciones.get(0).IdUsuario = usuario.getIdUsuario();
+                Result result = direccionJPADAOImplementation.ADD(usuario);
+                
+                return "redirect:/usuario";
+                //}
+            } else { //Editar direccion
+
+                //Autoinferencia
+                //Result result = usuarioDAOImplementation.EditarDireccion(usuario);
+                //usuario.Direcciones.get(0).IdUsuario = usuario.getIdUsuario();
+                Result result = direccionJPADAOImplementation.Update(usuario);
+                return "redirect:/usuario";
+
+            }
+        }
+
+        //Si bindingResult tiene errores...
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("Usuario", usuario);
+
+            //Volver a pintar la lista de roles
+            model.addAttribute("roles", rolJPADAOImplementation.GetAll().objects);
+
+            return "UsuarioForm";
+        } else {
+            //Autoinferencia
+            Result result = usuarioDAOImplementation.Add(usuario);
+
+            return "redirect:/usuario";
+        }
     }
-}
     
-    @PostMapping("add") 
+ /*   @PostMapping("add") 
     public String Add(@Valid @ModelAttribute("Usuario") Usuario usuario, BindingResult bindingResult,
             Model model,  @RequestParam("imagenFile") MultipartFile imagen){
         
@@ -368,7 +425,7 @@ public class UsuarioController {
 //    Result result = usuarioDAOImplementation.Add(usuario);
 //        return "redirect:/usuario";
         }   
-    }
+    }*/
     
     @GetMapping("delete/{IdUsuario}")
     public String Delete(@PathVariable("IdUsuario") int IdUsuario){

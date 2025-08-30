@@ -47,7 +47,7 @@ public class Direccion {
          this.Colonia = new Colonia();
         this.Colonia.setIdColonia(direccionML.Colonia.getIdColonia());
         this.Usuario = new Usuario();
-        this.Usuario.setIdUsuario(usuarioML.getIdAlumno());
+        this.Usuario.setIdUsuario(usuarioML.getIdUsuario());
          
          
      }

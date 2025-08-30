@@ -71,7 +71,7 @@ public class Usuario {
         this.Email = usuarioJPA.getEmail();
         this.Password = usuarioJPA.getPassword();
         this.Sexo = usuarioJPA.getSexo();
-        this.Telefono = usuarioJPA.getSexo();
+        this.Telefono = usuarioJPA.getTelefono();
         this.Celular = usuarioJPA.getCelular();
         this.CURP = usuarioJPA.getCURP();
         this.Imagen = usuarioJPA.getImagen();
@@ -274,9 +274,7 @@ public class Usuario {
         this.Rol = rol;
     }
 
-    public int getIdAlumno() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
     
 

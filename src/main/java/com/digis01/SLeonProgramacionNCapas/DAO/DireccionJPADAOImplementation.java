@@ -5,6 +5,7 @@
 package com.digis01.SLeonProgramacionNCapas.DAO;
 
 import com.digis01.SLeonProgramacionNCapas.JPA.Direccion;
+import com.digis01.SLeonProgramacionNCapas.ML.Colonia;
 import com.digis01.SLeonProgramacionNCapas.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -94,8 +95,32 @@ public Result Update(com.digis01.SLeonProgramacionNCapas.ML.Usuario usuarioML) {
 
     return result;
 }
+
+   @Override
+ public Result GetById(int idDireccion) {
         
+        Result result = new Result();
+
+        
+        try{
+            
+            Direccion direccionJPA =  entityManager.find(Direccion.class, idDireccion);
+            com.digis01.SLeonProgramacionNCapas.ML.Direccion direccionML = new com.digis01.SLeonProgramacionNCapas.ML.Direccion(direccionJPA);
+            result.object = direccionML;
+            result.correct = true;
+            
+        } catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    
     }
+}
+        
+    
 
 
 
