@@ -78,6 +78,9 @@ public class Usuario {
     @Column( name = "imagen")
     private String Imagen;
     
+    @Column(name = "status")
+    private int Status;
+    
     @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<com.digis01.SLeonProgramacionNCapas.JPA.Direccion> Direcciones = new ArrayList<>();
     
@@ -98,7 +101,7 @@ public class Usuario {
         this.Celular = usuarioML.getCelular();
         this.CURP = usuarioML.getCURP();
         this.Imagen = usuarioML.getImagen();
-        this.Imagen = usuarioML.getImagen();
+        this.Status = usuarioML.getStatus();
         
         this.Rol = new com.digis01.SLeonProgramacionNCapas.JPA.Rol();
         this.Rol.setIdRol(usuarioML.Rol.getIdRol());
@@ -258,6 +261,14 @@ public class Usuario {
 
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
+    }
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int Status) {
+        this.Status = Status;
     }
     
     

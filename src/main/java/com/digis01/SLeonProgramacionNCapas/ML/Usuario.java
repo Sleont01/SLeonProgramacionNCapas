@@ -54,9 +54,12 @@ public class Usuario {
     private String CURP;
     private int IdRol;
     public Rol Rol;
+    private int Status;
 
     public List<Direccion> Direcciones;
     private String Imagen;
+    
+    
 
     public Usuario() {
     }
@@ -75,7 +78,7 @@ public class Usuario {
         this.Celular = usuarioJPA.getCelular();
         this.CURP = usuarioJPA.getCURP();
         this.Imagen = usuarioJPA.getImagen();
-        
+        this.Status = usuarioJPA.getStatus();
         this.Rol = new Rol();
         this.Rol.setIdRol(usuarioJPA.Rol.getIdRol());
         this.Rol.setNombre(usuarioJPA.Rol.getNombre());
@@ -111,7 +114,7 @@ public class Usuario {
     }
 
     public Usuario(int idUsuario, String nombre, String apellidopaterno, Date fechanacimiento, String apellidomaterno,
-            String username, String email, String password, String sexo, String telefono, String celular, String curp, int idrol, String imagen) {
+            String username, String email, String password, String sexo, String telefono, String celular, String curp, int idrol, String imagen, int status) {
         this.IdUsuario = idUsuario;
         this.Nombre = nombre;
         this.ApellidoPaterno = apellidopaterno;
@@ -128,6 +131,7 @@ public class Usuario {
         this.CURP = curp;
         this.IdRol = idrol;
         this.Imagen = imagen;
+        this.Status = status;
     }
 
     public int getIdUsuario() {
@@ -273,6 +277,16 @@ public class Usuario {
         this.ApellidoMaterno = ApellidoMaterno;
         this.Rol = rol;
     }
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
+    
+    
 
     
 

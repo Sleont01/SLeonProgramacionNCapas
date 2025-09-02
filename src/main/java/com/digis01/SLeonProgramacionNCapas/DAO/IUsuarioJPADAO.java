@@ -22,4 +22,6 @@ public interface IUsuarioJPADAO {
     
     Result GetById(int IdUsuario);
     
+    Result BajaLogica(int IdUsuario);
+    
 }

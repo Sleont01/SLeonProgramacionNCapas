@@ -34,6 +34,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO{
             
             for (Usuario usuario : usuarios) {
                 result.objects.add(new com.digis01.SLeonProgramacionNCapas.ML.Usuario(usuario));
+               
             }
             
             result.correct = true;
@@ -57,7 +58,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO{
         try {
 
             Usuario usuarioJPA = new Usuario(usuarioML);
-
+            usuarioJPA.setStatus(1);
             entityManager.persist(usuarioJPA);
             
             result.correct = true; 
@@ -135,6 +136,30 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO{
         
         return result;
     }
+
+    @Override
+    public Result BajaLogica(int IdUsuario) {
+        Result result = new Result();
+        
+        try {
+            
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
+            
+            
+            
+            usuarioJPA.setStatus(usuarioJPA.getStatus() == 1 ? 0 : 1);
+
+            entityManager.merge(usuarioJPA);
+
+            
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+       }
 
   
 }

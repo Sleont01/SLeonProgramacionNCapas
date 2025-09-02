@@ -649,30 +649,6 @@
 
                 $(document).ready(function (){
                 console.log("Hola, soy el cliente")
-                
-                
-                
-                $("#municipioddl").change(function (){
-                    $.ajax({
-                            type: "GET",
-                            url: "/usuario/getEstadosByPais/" + $("#paisddl").val(),
-                            dataType: "json",
-                            success: function (data, textStatus, jqXHR) {
-                                if (data.correct) {
-                                    $("#estadoddl").empty(); // Limpia el select antes de agregar opciones nuevas
-                                    $("#estadoddl").append('<option value="0" selected>Selecciona un estado</option>');
-                                    $.each(data.objects, function (indice, estado) {
-                                        $("#estadoddl").append('<option value="' + estado.idEstado + '">' + estado.nombre + '</option>');
-                                    });
-                                }
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                alert("Algo salió mal al obtener los estados.");
-                            }
-                        });
-                });
-
-
 
                 $("#paisddl").change(function(){
                     $.ajax({
@@ -692,7 +668,27 @@
                                 alert("Algo salió mal al obtener los estados.");
                             }
                         });
-                });                    
+                });   
+                
+                $("#estadoddl").change(function(){
+                $.ajax({
+                            type: "GET",
+                            url: "/usuario/getMunicipiosByEstado/" + $("#estadoddl").val(),
+                            dataType: "json",
+                            success: function (data, textStatus, jqXHR) {
+                            if (data.correct) {
+                            $("#municipioddl").empty(); // Limpia el select antes de agregar opciones nuevas
+                            $("#municipioddl").append('<option value="0" selected>Selecciona un municipio</option>');
+                            $.each(data.objects, function (indice, municipio) {
+                            $("#municipioddl").append('<option value="' + municipio.idMunicipio + '">' + municipio.nombre + '</option>');
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Algo salió mal al obtener los municipios.");
+        }
+    });
+});
                     
                 });
                     

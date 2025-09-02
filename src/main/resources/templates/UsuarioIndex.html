@@ -60,8 +60,9 @@
                 <th class="col-1"></th>
                 <th class="col-3">Imagen</th>
                 <th class="col-2">Nombre</th>
-                <th class="col-3">Contacto</th>
+                <th class="col-2">Contacto</th>
                 <th class="col-3">Dirección</th>
+                <th class="col-1">Status</th>
                 </thead>
                 <tbody>
                     <tr th:each="usuario : ${usuarios}">
@@ -99,12 +100,40 @@
                 <div th:each="direccion : ${usuario.Direcciones}" th:text="|${direccion.Calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}
                      ${direccion.Colonia.Nombre}, ${direccion.Colonia.CodigoPostal} ${direccion.Colonia.Municipio.Nombre} ${direccion.Colonia.Municipio.Estado.Nombre}
                      ${direccion.Colonia.Municipio.Estado.Pais.Nombre}|"></div>
-            </td>
-            
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input switch-baja-logica" 
+                                       type="checkbox" 
+                                       role="switch" 
+                                       th:attr="data-id=${usuario.IdUsuario}"
+                                       th:checked="${usuario.Status}">
+                            </div>
+                        </td>
+
             
                     </tr>
                 </tbody>
             </table>
         </div>
+        
+        <script>
+             $(document).on('change', '.switch-baja-logica', function() {
+    let idUsuario = $(this).data("id");
+    let element = this;
+    
+    element.disabled = true;
+    
+    $.get("/usuario/cambiarEstado/" + idUsuario, function(result) {
+        if (!result.Correct) {
+            element.checked = !element.checked; 
+        }
+        element.disabled = false;
+    }).fail(function() {
+        element.checked = !element.checked; 
+        element.disabled = false;
+    });
+});
+        </script>
     </body>
 </html>

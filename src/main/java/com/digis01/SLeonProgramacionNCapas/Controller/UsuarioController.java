@@ -743,6 +743,13 @@ public class UsuarioController {
 
         return errores;
     }
+    
+     @GetMapping("/cambiarEstado/{IdUsuario}")
+    @ResponseBody
+    public Result cambiarEstado(@PathVariable int IdUsuario) {
+        
+        return usuarioJPADAOImplementation.BajaLogica(IdUsuario);
+    } 
 
 }
 
