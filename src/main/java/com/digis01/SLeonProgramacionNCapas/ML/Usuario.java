@@ -1,5 +1,7 @@
 package com.digis01.SLeonProgramacionNCapas.ML;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;

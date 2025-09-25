@@ -49,7 +49,7 @@ public class Usuario {
     private String ApellidoMaterno;
    
     @Column(name = "username")
-    private String Username;
+    private String username;
    
     @Column(name = "email")
     private String Email;
@@ -93,7 +93,7 @@ public class Usuario {
         this.ApellidoPaterno = usuarioML.getApellidoPaterno();
         this.FechaNacimiento = new java.sql.Date(usuarioML.getFechaNacimiento().getTime());
         this.ApellidoMaterno = usuarioML.getApellidoMaterno();
-        this.Username = usuarioML.getUsername();
+        this.username = usuarioML.getUsername();
         this.Email = usuarioML.getEmail();
         this.Password = usuarioML.getPassword();
         this.Sexo = usuarioML.getSexo();
@@ -145,7 +145,7 @@ public class Usuario {
         this.ApellidoPaterno = ApellidoPaterno;
         this.FechaNacimiento = FechaNacimiento;
         this.ApellidoMaterno = ApellidoMaterno;
-        this.Username = Username;
+        this.username = Username;
         this.Email = Email;
         this.Password = Password;
         this.Sexo = Sexo;
@@ -189,11 +189,11 @@ public class Usuario {
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String Username) {
-        this.Username = Username;
+        this.username = Username;
     }
 
     public String getEmail() {

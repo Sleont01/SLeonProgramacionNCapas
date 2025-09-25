@@ -1,5 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf-org/extras/spring-security"
       layout:decorate="~{layout}">
     <head>
         <title>TODO supply a title</title>
@@ -11,6 +12,11 @@
     </head>
     <body layout:fragment="body">
         <div class="container">
+            <div class="mb-3 text-end">
+        <a th:href="@{/logout}" class="btn btn-danger">
+            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+        </a>
+    </div>
 
             <form method="post" th:action="@{/usuario}" th:object="${usuarioBusqueda}">
                 <div class="row">
@@ -51,8 +57,7 @@
 
 
 
-
-            <a th:href="@{usuario/action/{idUsuario}(idUsuario=0)}" class="btn btn-primary"><i class="bi bi-plus"></i></a>
+            <a sec:authorize="hasAnyRole('ADMIN')" th:href="@{usuario/action/{idUsuario}(idUsuario=0)}" class="btn btn-primary"><i class="bi bi-plus"></i></a>
             <!--     <a href="/usuario/add" class="btn btn-primary"><i class="bi bi-plus"></i></a> -->
 
             <table class="table table-hover">
@@ -66,7 +71,19 @@
                 </thead>
                 <tbody>
                     <tr th:each="usuario : ${usuarios}">
-                        <td><a th:href="@{/usuario/action/{idUsuario}(idUsuario = ${usuario.IdUsuario})}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a><a class="btn btn-danger" th:href="@{/usuario/delete/{IdUsuario}(IdUsuario = ${usuario.IdUsuario})}"><i class="bi bi-trash3-fill"></i></a></td>
+                        <td>
+    <a sec:authorize="hasRole('ADMIN')" 
+       th:href="@{/usuario/action/{idUsuario}(idUsuario=${usuario.IdUsuario})}" 
+       class="btn btn-warning">
+       <i class="bi bi-pencil-square"></i>
+    </a>
+    <a sec:authorize="hasRole('ADMIN')" 
+       th:href="@{/usuario/delete/{IdUsuario}(IdUsuario=${usuario.IdUsuario})}" 
+       class="btn btn-danger">
+       <i class="bi bi-trash3-fill"></i>
+    </a>
+</td>
+
                         <td>
                             <img id="imagenUsuario" style="max-height: 80px; max-width: 80px;" th:src="|${(usuario.Imagen != null) ? 'data:image/*;base64,' + usuario.Imagen : 'https://tlconnect.teamlease.com/Images/Profile/default.jpg'}|"/>
                         </td>
