@@ -290,14 +290,21 @@ input[type=text]:placeholder {
     <div class="fadeIn first">
       <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
     </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <!-- Mensaje de logout -->
+                <div th:if="${logoutMessage}" class="alert alert-success" th:text="${logoutMessage}"></div>
+
 
     <!-- Login Form -->
-    <form method="post" action="/login">
-      <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-      <input type="password" id="password" class="fadeIn third" name="password" placeholder="Contraseña" required>
+    <form th:action="@{/login}" method="post">
+    <input type="text" name="username" placeholder="Usuario" required />
+    <input type="password" name="password" placeholder="Contraseña" required />
+    <button type="submit">Ingresar</button>
+    <p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
+</form>
 
-      <input type="submit" class="fadeIn fourth" value="Log In">
-    </form>
 
     <!-- Remind Passowrd -->
     <div id="formFooter">

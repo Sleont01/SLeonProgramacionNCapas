@@ -4,7 +4,7 @@
  */
 package com.digis01.SLeonProgramacionNCapas.DAO;
 
-import com.digis01.SLeonProgramacionNCapas.ML.Usuario;
+import com.digis01.SLeonProgramacionNCapas.JPA.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

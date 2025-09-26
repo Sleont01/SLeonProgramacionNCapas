@@ -7,14 +7,18 @@ package com.digis01.SLeonProgramacionNCapas.Configuration;
 import com.digis01.SLeonProgramacionNCapas.DAO.UserDetailsJPAService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 /**
  *
@@ -35,14 +39,26 @@ public class SpringSecurityConfig {
         
         http.authorizeHttpRequests(configurer -> configurer
                 
-                .requestMatchers("/usuario/cargamasiva/**").hasRole("ADMIN")
-                .requestMatchers("/usuario/action/**", "/usuario/delete/**").hasRole("ADMIN")
+                .requestMatchers("/usuario/cargamasiva/**").hasRole("Administrador")
+                .requestMatchers("/usuario/action/**", "/usuario/delete/**").hasRole("Administrador")
                 .requestMatchers("/usuario/**")
                 .hasAnyRole("Usuario","Cliente","Administrador","Vendedor")
+                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
         )
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/usuario", true)
+                        .failureHandler(authenticationFailureHandler())
+                        .permitAll()
+                        )
+        .logout(logout -> logout
+                .logoutUrl("/logout") 
+                .logoutSuccessUrl("/login?logout") 
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+        
                 
                 
         ).userDetailsService(userDetailsJPAService);
@@ -53,6 +69,26 @@ public class SpringSecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
 //        return NoOpPasswordEncoder.getInstance();
+    }
+    
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return (request, response, exception) -> {
+            String errorMessage;
+
+            if (exception instanceof UsernameNotFoundException) {
+                errorMessage = "Usuario incorrecto";
+            } else if (exception instanceof DisabledException) {
+                errorMessage = "Usuario deshabilitado";
+            } else if (exception instanceof BadCredentialsException) {
+                errorMessage = "Contraseña incorrecta";
+            } else {
+                errorMessage = "Error de autenticación";
+            }
+
+            request.getSession().setAttribute("error", errorMessage);
+            response.sendRedirect("/login?error=true");
+        };
     }
     
 //    @Bean
